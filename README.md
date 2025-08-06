@@ -35,6 +35,18 @@ The "magic touch" comes from **Google Gemini**, which powers our AI Assistant fe
 
 Finally, to tie it all together, the entire application is deployed on **Vercel**, giving us a seamless CI/CD pipeline, automatic previews for every push, and world-class performance.
 
+## Challenges We Ran Into
+
+Every project has its hurdles. Here are the key challenges we faced and how we overcame them:
+
+*   **Mastering the Next.js App Router Paradigm**
+
+    We intentionally stepped out of our comfort zone by building this project with the Next.js App Router. This presented a steep learning curve, particularly with the paradigm shift to React Server Components (RSC) and its granular, strict architecture. Initially, this slowed down our development velocity as we had to rethink familiar patterns for data fetching, state management, and component composition. However, by pushing through, we gained a much deeper understanding of modern web architecture, which ultimately resulted in a more performant and well-structured application.
+
+*   **Adapting to Asynchronous Collaboration**
+
+    In the early stages, we faced logistical issues that impacted our access to real-time project management tools. This forced us to quickly adapt to a more asynchronous workflow. Instead of relying on constant connectivity, we emphasized clear, concise documentation for tasks and relied on disciplined self-management to keep the project timeline on track. This experience taught us the importance of robust offline planning and strong individual ownership within the team.
+
 ## ✨ Core Features (MVP)
 
 * **Detailed Artisan Profiles:** Every master has a profile page showcasing their story & expertise 
