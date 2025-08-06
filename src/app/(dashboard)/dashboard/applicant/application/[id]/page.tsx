@@ -1,7 +1,9 @@
 import StatusChip from "@/lib/components/StatusChip";
 import { repositories } from "@/lib/repository";
+import dynamic from "next/dynamic";
 import Image from "next/image";
-import ApplicationActionButtons from "../ApplicationActionButtons";
+import ApplicationActionButtons from "../../../artisan/applicants/ApplicationActionButtons";
+
 
 interface ApplicationDetailPageProps {
     params: Promise<{ id: string }>;
