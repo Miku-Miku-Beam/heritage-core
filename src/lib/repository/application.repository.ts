@@ -57,6 +57,7 @@ interface ProgramWithDetails {
     categoryId: string;
     artisan: ArtisanUser;
     category: Category;
+    programImageUrl?: string | null;
 }
 
 interface ApplicationWithDetails {

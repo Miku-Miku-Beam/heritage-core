@@ -1,11 +1,11 @@
 import { getCurrentUser } from '@/lib/auth';
 import LogoutButton from '@/lib/components/LogoutButton';
-import ActiveLink from './ActiveLink';
 import Link from 'next/link';
+import ActiveLink from './ActiveLink';
 
 const menu = [
   { href: "/dashboard/applicant", label: "Overview", icon: "🏠" },
-  { href: "/dashboard/applicant/application", label: "My Applications", icon: "📝" },
+  { href: "/dashboard/applicant/applications", label: "My Applications", icon: "📝" },
   { href: "/programs", label: "Find Program", icon: "🔍" },
   { href: "/dashboard/applicant/profile", label: "Edit Profile", icon: "👤" },
 ];
