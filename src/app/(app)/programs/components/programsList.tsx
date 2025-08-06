@@ -23,20 +23,28 @@ interface ProgramsListProps {
 }
 
 const ProgramsList = ({ events }: ProgramsListProps) => (
-  <div className="flex flex-col gap-8">
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-      {events && events.length > 0 ? (
-        events.map((event: ProgramCardProps) => (
+  <div>
+    {events && events.length > 0 ? (
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        {events.map((event: ProgramCardProps) => (
           <ProgramCard key={event.id} {...event} />
-        ))
-      ) : (
-        <div className="col-span-full text-center text-gray-400 py-12 flex flex-col items-center">
-          <svg width="64" height="64" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="mx-auto mb-4 text-yellow-400"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6 1a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-          <span className="text-lg font-semibold">Tidak ada program yang ditemukan.</span>
-          <span className="text-sm text-gray-500 mt-1">Coba kata kunci atau filter lain.</span>
+        ))}
+      </div>
+    ) : (
+      <div className="text-center py-20">
+        <div className="max-w-md mx-auto">
+          <div className="w-24 h-24 mx-auto mb-6 bg-gradient-to-br from-orange-100 to-yellow-100 rounded-full flex items-center justify-center">
+            <svg className="w-12 h-12 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
+            </svg>
+          </div>
+          <h3 className="text-2xl font-bold text-gray-900 mb-3">No Programs Found</h3>
+          <p className="text-gray-600 text-lg leading-relaxed">
+            We couldn't find any programs matching your criteria. Try adjusting your search terms or filters.
+          </p>
         </div>
-      )}
-    </div>
+      </div>
+    )}
   </div>
 );
 
