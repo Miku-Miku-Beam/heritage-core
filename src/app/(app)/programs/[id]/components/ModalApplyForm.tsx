@@ -60,7 +60,7 @@ export default function ModalApplyForm({
   return (
     <AnimatePresence>
       {open && (
-        <motion.div 
+        <motion.div
           className="fixed inset-0 z-50 flex items-center justify-center p-4"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -68,16 +68,16 @@ export default function ModalApplyForm({
           transition={{ duration: 0.3 }}
         >
           {/* Backdrop */}
-          <motion.div 
+          <motion.div
             className="absolute inset-0 bg-black/60 backdrop-blur-sm"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
           />
-          
+
           {/* Modal Content */}
-          <motion.div 
+          <motion.div
             className="relative bg-white rounded-3xl shadow-2xl w-full max-w-lg border border-orange-100 overflow-hidden"
             initial={{ opacity: 0, scale: 0.9, y: 40 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -95,7 +95,7 @@ export default function ModalApplyForm({
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>
-              
+
               <div className="text-center">
                 <div className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center mx-auto mb-4">
                   <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -110,7 +110,7 @@ export default function ModalApplyForm({
             {/* Content */}
             <div className="p-8">
               {success ? (
-                <motion.div 
+                <motion.div
                   className="text-center py-8"
                   initial={{ opacity: 0, scale: 0.8 }}
                   animate={{ opacity: 1, scale: 1 }}
@@ -134,7 +134,7 @@ export default function ModalApplyForm({
                 <form onSubmit={handleSubmit} className="space-y-6">
                   {/* Message Field */}
                   <div>
-                    <label className="block text-gray-800 font-semibold mb-3 flex items-center gap-2">
+                    <label className=" text-gray-800 font-semibold mb-3 flex items-center gap-2">
                       <svg className="w-5 h-5 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                       </svg>
@@ -158,7 +158,7 @@ export default function ModalApplyForm({
 
                   {/* Motivation Field */}
                   <div>
-                    <label className="block text-gray-800 font-semibold mb-3 flex items-center gap-2">
+                    <label className=" text-gray-800 font-semibold mb-3 flex items-center gap-2">
                       <svg className="w-5 h-5 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                       </svg>
@@ -182,7 +182,7 @@ export default function ModalApplyForm({
 
                   {/* CV/Portfolio Link */}
                   <div>
-                    <label className="block text-gray-800 font-semibold mb-3 flex items-center gap-2">
+                    <label className=" text-gray-800 font-semibold mb-3 flex items-center gap-2">
                       <svg className="w-5 h-5 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
                       </svg>
@@ -197,7 +197,7 @@ export default function ModalApplyForm({
                       placeholder="https://your-portfolio-or-cv.com"
                     />
                     {cvError && (
-                      <motion.div 
+                      <motion.div
                         className="mt-2 text-red-500 text-sm flex items-center gap-1"
                         initial={{ opacity: 0, x: -10 }}
                         animate={{ opacity: 1, x: 0 }}
