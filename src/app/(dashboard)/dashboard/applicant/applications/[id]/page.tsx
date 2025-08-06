@@ -1,7 +1,7 @@
 import { getCurrentCookie } from "@/lib/auth";
 import { repositories } from "@/lib/repository";
 import { redirect } from "next/navigation";
-import ApplicationDetailTabs from "./ApplicationDetailTabs";
+import ApplicationDetailTabs from "./components/ApplicationDetailTabs";
 
 interface PageProps {
     params: Promise<{ id: string }>;

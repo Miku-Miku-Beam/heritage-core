@@ -22,7 +22,8 @@ export default async function ApplicantApplicationsPage() {
     redirect("/login/applicant");
   }
 
-  const applications = await repositories.applicant.getMyApplications(user.id);
+  const applications = await repositories.applicant.getMyApplications(user.userId);
+
   const grouped: Record<string, ApplicationItemProps[]> = {};
   applications.forEach((app: any) => {
     const status = app.status;
