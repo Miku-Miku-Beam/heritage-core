@@ -35,65 +35,92 @@ const ProgramCard = ({
   artisanAvatar,
   artisanName,
 }: ProgramCardProps) => (
-  <div className="bg-white/80 backdrop-blur-lg border border-white/40 shadow-xl hover:shadow-2xl transition-shadow duration-200 rounded-3xl w-full max-w-xs flex flex-col overflow-hidden group">
-    {/* Thumbnail & Status badge */}
-    <div className="relative w-full">
-      <img
-        src={programImageUrl || fallbackProgram}
-        alt={title}
-        className="object-cover w-full h-44 rounded-t-3xl"
-        width={400}
-        height={176}
-      />
-      <span className={`absolute top-4 left-4 px-4 py-1 rounded-full text-sm font-bold shadow-lg z-10 ${isOpen ? 'bg-green-500/90 text-white' : 'bg-gray-400/80 text-white'}`}>{isOpen ? 'Open' : 'Closed'}</span>
-    </div>
-    {/* Artisan avatar dan nama */}
-    <div className="flex items-center gap-4 px-6 pt-4 pb-2">
-      <img
-        src={artisanAvatar || fallbackAvatar}
-        alt={artisanName || 'Artisan'}
-        width={48}
-        height={48}
-        className="w-12 h-12 rounded-full border-2 border-gray-500"
-      />
-      <div className="flex flex-col">
-        <span className="font-semibold text-base text-gray-800 leading-tight">{artisanName || '-'}</span>
-        <span className="text-xs text-gray-500">Artisan</span>
-      </div>
-    </div>
-    <div className="px-6 pb-6 flex-1 flex flex-col">
-      <span className="inline-block bg-[#FF9000] text-white text-xs px-3 py-1 rounded-full font-semibold shadow mb-2 w-fit">{category}</span>
-      <h3 className="font-bold text-lg text-gray-900 mb-1 line-clamp-2">{title}</h3>
-      {/* <p className="text-gray-700 text-sm mb-2 line-clamp-3">{description}</p> */}
-      <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-xs text-gray-600 mb-2">
-        <div><b>Duration:</b> {duration}</div>
-        {/* <div><b>Applicants:</b> {applications}</div> */}
-        {/* <div className="col-span-2"><b>Criteria:</b> {criteria}</div> */}
-        <div className="col-span-2"><b>Created:</b> {new Date(createdAt).toLocaleDateString()}</div>
-      </div>
-      <div className="flex-1" />
-      <Link
-        href={isOpen ? `/programs/${id}` : "#"}
-        className={`w-full mt-2 py-3 rounded-xl font-bold flex items-center justify-center gap-2 text-base transition-colors duration-200 shadow-md ${
-          isOpen
-            ? 'bg-[#FF9000] hover:bg-[#E33629] text-white'
-            : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-        }`}
-        tabIndex={isOpen ? 0 : -1}
-        aria-disabled={!isOpen}
-        style={{ pointerEvents: isOpen ? "auto" : "none" }}
-      >
-        {isOpen ? (
-          <>
-            <span>Join Program</span>
-            <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="inline-block"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
-          </>
-        ) : (
-          'Program Closed'
+  <Link href={isOpen ? `/programs/${id}` : "#"} className={`group block h-full ${!isOpen ? 'pointer-events-none' : ''}`}>
+    <div className="bg-white border border-gray-200 hover:border-orange-300 hover:shadow-lg transition-all duration-300 rounded-2xl overflow-hidden h-full flex flex-col">
+      {/* Image Header */}
+      <div className="relative aspect-video">
+        <img
+          src={programImageUrl || fallbackProgram}
+          alt={title}
+          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+        />
+        <div className="absolute top-4 left-4">
+          <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${
+            isOpen 
+              ? 'bg-green-100 text-green-800' 
+              : 'bg-gray-100 text-gray-800'
+          }`}>
+            {isOpen ? 'Open' : 'Closed'}
+          </span>
+        </div>
+        {!isOpen && (
+          <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center">
+            <span className="text-white font-medium text-lg">Program Closed</span>
+          </div>
         )}
-      </Link>
+      </div>
+
+      {/* Content */}
+      <div className="p-6 flex-1 flex flex-col">
+        {/* Category Badge */}
+        <div className="mb-3">
+          <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-800">
+            {category}
+          </span>
+        </div>
+
+        {/* Title and Description */}
+        <h3 className="text-lg font-bold text-gray-900 mb-2 line-clamp-2 group-hover:text-orange-600 transition-colors">
+          {title}
+        </h3>
+        
+        <p className="text-gray-600 text-sm mb-4 line-clamp-3 leading-relaxed flex-1">
+          {description}
+        </p>
+
+        {/* Program Details */}
+        <div className="space-y-2 mb-4">
+          <div className="flex items-center text-sm text-gray-500">
+            <svg className="w-4 h-4 mr-2 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span>{duration}</span>
+          </div>
+          
+          <div className="flex items-center text-sm text-gray-500">
+            <svg className="w-4 h-4 mr-2 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+            </svg>
+            <span>{applications} applicant{applications !== 1 ? 's' : ''}</span>
+          </div>
+        </div>
+
+        {/* Artisan Info */}
+        <div className="flex items-center justify-between pt-4 border-t border-gray-100">
+          <div className="flex items-center">
+            <img
+              src={artisanAvatar || fallbackAvatar}
+              alt={artisanName || 'Artisan'}
+              className="w-8 h-8 rounded-full mr-3"
+            />
+            <div>
+              <p className="text-sm font-medium text-gray-900">{artisanName || 'Unknown'}</p>
+              <p className="text-xs text-gray-500">Artisan</p>
+            </div>
+          </div>
+          
+          {isOpen && (
+            <div className="flex items-center text-orange-600 text-sm font-medium group-hover:text-orange-700">
+              View Details
+              <svg className="w-4 h-4 ml-1 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </div>
+          )}
+        </div>
+      </div>
     </div>
-  </div>
+  </Link>
 );
 
 export default ProgramCard;

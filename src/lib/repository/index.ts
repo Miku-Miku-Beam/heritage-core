@@ -42,7 +42,7 @@ export type {
     Category as ApplicationCategory, ProgramWithDetails as ApplicationProgramWithDetails,
     ApplicationStats, ApplicationWithDetails, ArtisanApplicationStats, IApplicationRepository,
     ICreateApplicationData,
-    IUpdateApplicationData, ProgramApplicationStats
+    IUpdateApplicationData, ProgramApplicationStats, ProgressReport
 } from './application.repository';
 
 export type {

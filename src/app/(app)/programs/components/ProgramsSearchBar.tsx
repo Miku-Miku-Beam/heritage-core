@@ -33,52 +33,63 @@ const ProgramsSearchBar = ({ search, category, categories }: ProgramsSearchBarPr
   }
 
   return (
-    <div className="flex flex-col sm:flex-row items-center gap-4 mb-6 bg-white/60 backdrop-blur-md border border-white/30 shadow-lg rounded-2xl p-4">
-      <label htmlFor="search-program" className="sr-only">Cari program</label>
-      <div className="relative flex-1 w-full">
-        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
-          <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-4.35-4.35M11 19a8 8 0 100-16 8 8 0 000 16z" /></svg>
-        </span>
-        <input
-          id="search-program"
-          type="text"
-          value={searchValue}
-          onChange={e => {
-            setSearchValue(e.target.value);
-            updateQuery(e.target.value, categoryValue);
-          }}
-          placeholder="Cari program berdasarkan judul atau deskripsi..."
-          className="pl-10 pr-10 bg-white/80 border border-gray-200 rounded-lg px-4 py-2 outline-none text-gray-700 placeholder-gray-400 focus:ring-2 focus:ring-yellow-400 transition w-full"
-          autoComplete="off"
-        />
-        {searchValue && (
-          <button
-            type="button"
-            aria-label="Clear search"
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 focus:outline-none"
-            onClick={() => {
-              setSearchValue("");
-              updateQuery("", categoryValue);
+    <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
+      <div className="flex flex-col md:flex-row gap-4">
+        <div className="flex-1">
+          <label htmlFor="search-program" className="block text-sm font-medium text-gray-700 mb-2">Search Programs</label>
+          <div className="relative">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <svg className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </div>
+            <input
+              id="search-program"
+              type="text"
+              value={searchValue}
+              onChange={e => {
+                setSearchValue(e.target.value);
+                updateQuery(e.target.value, categoryValue);
+              }}
+              placeholder="Search by title or description..."
+              className="block w-full pl-10 pr-10 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors duration-200"
+              autoComplete="off"
+            />
+            {searchValue && (
+              <button
+                type="button"
+                aria-label="Clear search"
+                className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 focus:outline-none"
+                onClick={() => {
+                  setSearchValue("");
+                  updateQuery("", categoryValue);
+                }}
+              >
+                <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            )}
+          </div>
+        </div>
+        
+        <div className="w-full md:w-48">
+          <label htmlFor="category-program" className="block text-sm font-medium text-gray-700 mb-2">Category</label>
+          <select
+            id="category-program"
+            className="block w-full px-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors duration-200 bg-white"
+            value={categoryValue}
+            onChange={e => {
+              setCategoryValue(e.target.value);
+              updateQuery(searchValue, e.target.value);
             }}
           >
-            <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
-          </button>
-        )}
+            {categories.map(cat => (
+              <option key={cat} value={cat}>{cat}</option>
+            ))}
+          </select>
+        </div>
       </div>
-      <label htmlFor="category-program" className="sr-only">Filter kategori</label>
-      <select
-        id="category-program"
-        className="bg-white/80 border border-gray-200 rounded-lg px-3 py-2 outline-none text-gray-700 focus:ring-2 focus:ring-yellow-400 transition"
-        value={categoryValue}
-        onChange={e => {
-          setCategoryValue(e.target.value);
-          updateQuery(searchValue, e.target.value);
-        }}
-      >
-        {categories.map(cat => (
-          <option key={cat} value={cat}>{cat}</option>
-        ))}
-      </select>
     </div>
   );
 };
