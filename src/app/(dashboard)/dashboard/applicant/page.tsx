@@ -1,5 +1,5 @@
 // src/app/(dashboard)/dashboard/applicant/page.tsx
-import { getCurrentCookie } from "@/lib/auth";
+import { getCurrentUser } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import Link from "next/link";
 import { redirect } from "next/navigation";
@@ -43,19 +43,28 @@ function statusBadge(status: string) {
         </span>
       );
     default:
-      return <span className="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-semibold bg-gray-100 text-gray-700 border border-gray-200">{status}</span>;
+      return (
+        <span className="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-semibold bg-gray-100 text-gray-700 border border-gray-200">
+          {status}
+        </span>
+      );
   }
 }
 
 export default async function ApplicantDashboardPage() {
-  const user = await getCurrentCookie();
+  const user = await getCurrentUser();
   if (!user || user.role !== "APPLICANT") redirect("/login/applicant");
 
   // Fetch applications for this applicant
   const applications = await prisma.application.findMany({
-    where: { applicantId: user.userId },
+    where: { applicantId: user.id },
     orderBy: { createdAt: "desc" },
     include: {
+      applicant: {
+        select: {
+          name: true,
+        },
+      },
       Program: { 
         select: { 
           title: true, 
@@ -104,12 +113,14 @@ export default async function ApplicantDashboardPage() {
               <h1 className="text-3xl md:text-4xl font-extrabold mb-2">
                 Welcome back, <span className="text-yellow-200">{user.name?.split(" ")[0]}</span>! 👋
               </h1>
-              <p className="text-white/90 text-lg mb-6">Continue your journey in preserving Indonesian cultural heritage</p>
+              <p className="text-white/90 text-lg mb-6">
+                Continue your journey in preserving Indonesian cultural heritage
+              </p>
               
               <div className="flex flex-wrap gap-4">
                 <Link
                   href="/programs"
-                  className="inline-flex items-center gap-2 bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white font-semibold px-6 py-3 rounded-xl transition-all duration-200 hover:scale-105"
+                  className="inline-flex items-center gap-2 bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white font-semibold px-6 py-3 rounded-xl transition-all duration-200"
                 >
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -118,7 +129,7 @@ export default async function ApplicantDashboardPage() {
                 </Link>
                 <Link
                   href="/dashboard/applicant/applications"
-                  className="inline-flex items-center gap-2 bg-white text-orange-600 hover:bg-gray-50 font-semibold px-6 py-3 rounded-xl transition-all duration-200 hover:scale-105"
+                  className="inline-flex items-center gap-2 bg-white text-orange-600 hover:bg-gray-50 font-semibold px-6 py-3 rounded-xl transition-all duration-200"
                 >
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -132,7 +143,7 @@ export default async function ApplicantDashboardPage() {
 
         {/* Statistics Grid */}
         <div className="grid grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
-          <div className="bg-white rounded-2xl shadow-xl border border-orange-200 p-6 text-center group hover:scale-105 transition-all duration-300">
+          <div className="bg-white rounded-2xl shadow-xl border border-orange-200 p-6 text-center group hover:scale-105 transition-transform duration-300">
             <div className="w-12 h-12 bg-gradient-to-r from-orange-500 to-yellow-500 rounded-xl flex items-center justify-center mx-auto mb-4">
               <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
@@ -142,7 +153,7 @@ export default async function ApplicantDashboardPage() {
             <div className="text-sm font-semibold text-gray-600">Total Applications</div>
           </div>
 
-          <div className="bg-white rounded-2xl shadow-xl border border-yellow-200 p-6 text-center group hover:scale-105 transition-all duration-300">
+          <div className="bg-white rounded-2xl shadow-xl border border-yellow-200 p-6 text-center group hover:scale-105 transition-transform duration-300">
             <div className="w-12 h-12 bg-gradient-to-r from-yellow-400 to-orange-400 rounded-xl flex items-center justify-center mx-auto mb-4">
               <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
@@ -152,7 +163,7 @@ export default async function ApplicantDashboardPage() {
             <div className="text-sm font-semibold text-gray-600">Pending</div>
           </div>
 
-          <div className="bg-white rounded-2xl shadow-xl border border-green-200 p-6 text-center group hover:scale-105 transition-all duration-300">
+          <div className="bg-white rounded-2xl shadow-xl border border-green-200 p-6 text-center group hover:scale-105 transition-transform duration-300">
             <div className="w-12 h-12 bg-gradient-to-r from-green-400 to-emerald-400 rounded-xl flex items-center justify-center mx-auto mb-4">
               <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
@@ -162,7 +173,7 @@ export default async function ApplicantDashboardPage() {
             <div className="text-sm font-semibold text-gray-600">Approved</div>
           </div>
 
-          <div className="bg-white rounded-2xl shadow-xl border border-blue-200 p-6 text-center group hover:scale-105 transition-all duration-300">
+          <div className="bg-white rounded-2xl shadow-xl border border-blue-200 p-6 text-center group hover:scale-105 transition-transform duration-300">
             <div className="w-12 h-12 bg-gradient-to-r from-blue-400 to-indigo-400 rounded-xl flex items-center justify-center mx-auto mb-4">
               <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
@@ -172,7 +183,7 @@ export default async function ApplicantDashboardPage() {
             <div className="text-sm font-semibold text-gray-600">Completed</div>
           </div>
 
-          <div className="bg-white rounded-2xl shadow-xl border border-red-200 p-6 text-center group hover:scale-105 transition-all duration-300">
+          <div className="bg-white rounded-2xl shadow-xl border border-red-200 p-6 text-center group hover:scale-105 transition-transform duration-300">
             <div className="w-12 h-12 bg-gradient-to-r from-red-400 to-pink-400 rounded-xl flex items-center justify-center mx-auto mb-4">
               <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
@@ -186,7 +197,7 @@ export default async function ApplicantDashboardPage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Recent Applications */}
           <div className="lg:col-span-2">
-            <div className="bg-white rounded-2xl shadow-xl border border-orange-200 p-6">
+            <div className="bg-white rounded-2xl shadow-xl border border-orange-200 p-6 hover:shadow-2xl transition-shadow duration-300">
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-3">
                   <div className="w-8 h-8 bg-gradient-to-r from-orange-500 to-yellow-500 rounded-lg flex items-center justify-center">
@@ -228,14 +239,17 @@ export default async function ApplicantDashboardPage() {
                 </div>
               ) : (
                 <div className="space-y-4">
-                  {applications.slice(0, 5).map(app => (
-                    <div key={app.id} className="border border-gray-200 rounded-xl p-4 hover:shadow-md transition-all duration-200 group">
+                  {applications.slice(0, 5).map((app) => (
+                    <div 
+                      key={app.id} 
+                      className="border border-gray-200 rounded-xl p-4 hover:shadow-md transition-all duration-200 group hover:scale-[1.02]"
+                    >
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-4">
                           <img
                             src={app.Program?.programImageUrl ?? "/default-program.jpg"}
                             alt={app.Program?.title}
-                            className="w-14 h-14 rounded-xl border-2 border-orange-200 object-cover"
+                            className="w-14 h-14 rounded-xl border-2 border-orange-200 object-cover hover:scale-110 transition-transform duration-200"
                           />
                           <div>
                             <h3 className="font-bold text-gray-900 group-hover:text-orange-600 transition-colors">
@@ -274,7 +288,7 @@ export default async function ApplicantDashboardPage() {
           {/* Sidebar */}
           <div className="space-y-6">
             {/* Quick Actions */}
-            <div className="bg-white rounded-2xl shadow-xl border border-orange-200 p-6">
+            <div className="bg-white rounded-2xl shadow-xl border border-orange-200 p-6 hover:shadow-2xl transition-shadow duration-300">
               <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
                 <div className="w-6 h-6 bg-gradient-to-r from-orange-500 to-yellow-500 rounded-lg flex items-center justify-center">
                   <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -286,7 +300,7 @@ export default async function ApplicantDashboardPage() {
               <div className="space-y-3">
                 <Link
                   href="/programs"
-                  className="w-full flex items-center gap-3 p-3 bg-gradient-to-r from-orange-50 to-yellow-50 hover:from-orange-100 hover:to-yellow-100 rounded-xl border border-orange-200 transition-all duration-200 group"
+                  className="w-full flex items-center gap-3 p-3 bg-gradient-to-r from-orange-50 to-yellow-50 hover:from-orange-100 hover:to-yellow-100 rounded-xl border border-orange-200 transition-all duration-200 group hover:scale-[1.02]"
                 >
                   <svg className="w-5 h-5 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -295,7 +309,7 @@ export default async function ApplicantDashboardPage() {
                 </Link>
                 <Link
                   href="/dashboard/applicant/profile"
-                  className="w-full flex items-center gap-3 p-3 bg-gradient-to-r from-orange-50 to-yellow-50 hover:from-orange-100 hover:to-yellow-100 rounded-xl border border-orange-200 transition-all duration-200 group"
+                  className="w-full flex items-center gap-3 p-3 bg-gradient-to-r from-orange-50 to-yellow-50 hover:from-orange-100 hover:to-yellow-100 rounded-xl border border-orange-200 transition-all duration-200 group hover:scale-[1.02]"
                 >
                   <svg className="w-5 h-5 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
@@ -307,7 +321,7 @@ export default async function ApplicantDashboardPage() {
 
             {/* Recommended Programs */}
             {recommendedPrograms.length > 0 && (
-              <div className="bg-white rounded-2xl shadow-xl border border-orange-200 p-6">
+              <div className="bg-white rounded-2xl shadow-xl border border-orange-200 p-6 hover:shadow-2xl transition-shadow duration-300">
                 <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
                   <div className="w-6 h-6 bg-gradient-to-r from-orange-500 to-yellow-500 rounded-lg flex items-center justify-center">
                     <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -317,17 +331,17 @@ export default async function ApplicantDashboardPage() {
                   Recommended for You
                 </h3>
                 <div className="space-y-3">
-                  {recommendedPrograms.map(program => (
+                  {recommendedPrograms.map((program) => (
                     <Link
                       key={program.id}
                       href={`/programs/${program.id}`}
-                      className="block p-3 border border-gray-200 rounded-xl hover:shadow-md transition-all duration-200 group"
+                      className="block p-3 border border-gray-200 rounded-xl hover:shadow-md transition-all duration-200 group hover:scale-[1.02]"
                     >
                       <div className="flex items-center gap-3">
                         <img
                           src={program.programImageUrl ?? "/default-program.jpg"}
                           alt={program.title}
-                          className="w-12 h-12 rounded-lg object-cover border border-orange-200"
+                          className="w-12 h-12 rounded-lg object-cover border border-orange-200 hover:scale-110 transition-transform duration-200"
                         />
                         <div className="flex-1 min-w-0">
                           <h4 className="font-semibold text-gray-900 group-hover:text-orange-600 transition-colors text-sm truncate">
