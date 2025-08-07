@@ -73,7 +73,7 @@ export default async function ArtisanDashboardPage() {
   const user = await getCurrentCookie();
 
   const programs = await prisma.program.findMany({
-    where: { artisanId: user.id },
+    where: { artisanId: user.userId },
     orderBy: { createdAt: 'desc' },
     include: {
       applications: {
@@ -93,7 +93,7 @@ export default async function ArtisanDashboardPage() {
 
   const allApplications = await prisma.application.findMany({
     where: {
-      Program: { artisanId: user.id },
+      Program: { artisanId: user.userId },
     },
     orderBy: { createdAt: 'desc' },
     take: 5,
@@ -146,7 +146,7 @@ export default async function ArtisanDashboardPage() {
               
               <div className="flex flex-wrap gap-4">
                 <Link
-                  href="/dashboard/artisan/programs/new"
+                  href="/dashboard/artisan/programs/add"
                   className="inline-flex items-center gap-2 bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white font-semibold px-6 py-3 rounded-xl transition-all duration-200 hover:scale-105"
                 >
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -265,7 +265,7 @@ export default async function ArtisanDashboardPage() {
                   <h3 className="text-lg font-semibold text-gray-900 mb-2">No applications yet</h3>
                   <p className="text-gray-500 mb-6">Students will appear here when they apply to your programs</p>
                   <Link
-                    href="/dashboard/artisan/programs/new"
+                    href="/dashboard/artisan/programs/add"
                     className="inline-flex items-center gap-2 bg-gradient-to-r from-orange-500 to-yellow-500 text-white font-semibold px-6 py-3 rounded-xl hover:scale-105 transition-all duration-200"
                   >
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -331,7 +331,7 @@ export default async function ArtisanDashboardPage() {
               </h3>
               <div className="space-y-3">
                 <Link
-                  href="/dashboard/artisan/programs/new"
+                  href="/dashboard/artisan/programs/add"
                   className="w-full flex items-center gap-3 p-3 bg-gradient-to-r from-orange-50 to-yellow-50 hover:from-orange-100 hover:to-yellow-100 rounded-xl border border-orange-200 transition-all duration-200 group"
                 >
                   <svg className="w-5 h-5 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -375,7 +375,7 @@ export default async function ArtisanDashboardPage() {
                 <div className="text-center py-6">
                   <p className="text-gray-500 mb-4">No programs created yet</p>
                   <Link
-                    href="/dashboard/artisan/programs/new"
+                    href="/dashboard/artisan/programs/add"
                     className="inline-flex items-center gap-2 text-orange-600 hover:text-orange-700 font-medium text-sm hover:underline"
                   >
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

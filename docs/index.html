@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Warisin Platform - Technical Documentation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #fff5ee 0%, #fef7f0 100%);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 3rem 0;
+            background: linear-gradient(135deg, #f97316 0%, #eab308 100%);
+            color: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(249, 115, 22, 0.2);
+        }
+        
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            font-weight: 800;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 2rem;
+        }
+        
+        .version-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            backdrop-filter: blur(10px);
+        }
+        
+        .docs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        .doc-card {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            border: 1px solid #f97316;
+        }
+        
+        .doc-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+        
+        .doc-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #f97316 0%, #eab308 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+        }
+        
+        .doc-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: #1f2937;
+        }
+        
+        .doc-description {
+            color: #6b7280;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+        
+        .doc-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #f97316;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+        
+        .doc-link:hover {
+            color: #ea580c;
+        }
+        
+        .tech-stack {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 3rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .tech-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            text-align: center;
+            color: #1f2937;
+        }
+        
+        .tech-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .tech-category {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 1.5rem;
+            border-left: 4px solid #f97316;
+        }
+        
+        .tech-category h3 {
+            color: #374151;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+        
+        .tech-list {
+            list-style: none;
+        }
+        
+        .tech-list li {
+            padding: 0.25rem 0;
+            color: #6b7280;
+        }
+        
+        .quick-links {
+            background: linear-gradient(135deg, #f97316 0%, #eab308 100%);
+            color: white;
+            border-radius: 16px;
+            padding: 3rem;
+            text-align: center;
+        }
+        
+        .quick-links h2 {
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            font-weight: 700;
+        }
+        
+        .links-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+        
+        .quick-link {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1rem;
+            border-radius: 12px;
+            text-decoration: none;
+            color: white;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+        
+        .quick-link:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 3rem;
+            padding: 2rem;
+            color: #6b7280;
+        }
+        
+        .emoji {
+            font-size: 1.2em;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .docs-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><span class="emoji">🏛️</span> Warisin Platform</h1>
+            <p class="subtitle">Technical Documentation - Heritage Preservation Platform</p>
+            <span class="version-badge">v1.0.0 | Next.js 15 | React 19</span>
+        </header>
+
+        <div class="docs-grid">
+            <div class="doc-card">
+                <div class="doc-icon">📚</div>
+                <h2 class="doc-title">Quick Start Guide</h2>
+                <p class="doc-description">
+                    Get up and running in 5 minutes. Installation, basic setup, and first steps to start development.
+                </p>
+                <a href="./QUICK_START.md" class="doc-link">
+                    Get Started →
+                </a>
+            </div>
+
+            <div class="doc-card">
+                <div class="doc-icon">🔧</div>
+                <h2 class="doc-title">Technical Documentation</h2>
+                <p class="doc-description">
+                    Complete technical guide covering installation, configuration, development, and maintenance.
+                </p>
+                <a href="./TECHNICAL_DOCUMENTATION.md" class="doc-link">
+                    Read Documentation →
+                </a>
+            </div>
+
+            <div class="doc-card">
+                <div class="doc-icon">👥</div>
+                <h2 class="doc-title">User Manual</h2>
+                <p class="doc-description">
+                    Comprehensive user guide for artisans and students. Learn how to use all platform features.
+                </p>
+                <a href="./USER_MANUAL.md" class="doc-link">
+                    User Guide →
+                </a>
+            </div>
+
+            <div class="doc-card">
+                <div class="doc-icon">🔌</div>
+                <h2 class="doc-title">API Documentation</h2>
+                <p class="doc-description">
+                    Complete API reference with endpoints, examples, and SDK implementations for integration.
+                </p>
+                <a href="./API_DOCUMENTATION.md" class="doc-link">
+                    API Reference →
+                </a>
+            </div>
+
+            <div class="doc-card">
+                <div class="doc-icon">🚀</div>
+                <h2 class="doc-title">Deployment Guide</h2>
+                <p class="doc-description">
+                    Production deployment guide for Vercel, Docker, VPS with security and monitoring best practices.
+                </p>
+                <a href="./DEPLOYMENT_GUIDE.md" class="doc-link">
+                    Deploy Now →
+                </a>
+            </div>
+
+            <div class="doc-card">
+                <div class="doc-icon">🐛</div>
+                <h2 class="doc-title">Troubleshooting</h2>
+                <p class="doc-description">
+                    Common issues, debugging tips, performance optimization, and maintenance procedures.
+                </p>
+                <a href="./TECHNICAL_DOCUMENTATION.md#troubleshooting" class="doc-link">
+                    Fix Issues →
+                </a>
+            </div>
+        </div>
+
+        <div class="tech-stack">
+            <h2 class="tech-title">Technology Stack</h2>
+            <div class="tech-grid">
+                <div class="tech-category">
+                    <h3>🖥️ Frontend</h3>
+                    <ul class="tech-list">
+                        <li>Next.js 15.4.3</li>
+                        <li>React 19.1.0</li>
+                        <li>TypeScript 5.8.3</li>
+                        <li>Tailwind CSS 4</li>
+                        <li>Framer Motion 12</li>
+                    </ul>
+                </div>
+                
+                <div class="tech-category">
+                    <h3>🗄️ Backend & Database</h3>
+                    <ul class="tech-list">
+                        <li>Next.js API Routes</li>
+                        <li>PostgreSQL</li>
+                        <li>Prisma ORM 6.12</li>
+                        <li>Server Components</li>
+                    </ul>
+                </div>
+                
+                <div class="tech-category">
+                    <h3>🔐 Authentication & Services</h3>
+                    <ul class="tech-list">
+                        <li>Firebase Auth</li>
+                        <li>UploadThing</li>
+                        <li>Server Actions</li>
+                        <li>Middleware</li>
+                    </ul>
+                </div>
+                
+                <div class="tech-category">
+                    <h3>🛠️ Development Tools</h3>
+                    <ul class="tech-list">
+                        <li>Bun Package Manager</li>
+                        <li>ESLint</li>
+                        <li>Turbopack</li>
+                        <li>PostCSS</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="quick-links">
+            <h2>Quick Access</h2>
+            <p>Essential links for developers and users</p>
+            
+            <div class="links-grid">
+                <a href="http://localhost:3000" class="quick-link">
+                    🏠 Development Server
+                </a>
+                <a href="http://localhost:3000/dashboard" class="quick-link">
+                    📊 Dashboard
+                </a>
+                <a href="http://localhost:3000/programs" class="quick-link">
+                    🎓 Programs
+                </a>
+                <a href="http://localhost:3000/artisans" class="quick-link">
+                    👨‍🎨 Artisans
+                </a>
+            </div>
+        </div>
+
+        <footer>
+            <p>
+                <strong>Warisin Heritage Platform</strong> - Connecting traditional artisans with eager learners<br>
+                Built with ❤️ for cultural preservation and knowledge transfer
+            </p>
+            <p style="margin-top: 1rem; color: #9ca3af;">
+                📖 Documentation • 🐛 <a href="https://github.com/Miku-Miku-Beam/heritage-core/issues" style="color: #f97316;">Report Issues</a> • 💬 <a href="https://github.com/Miku-Miku-Beam/heritage-core/discussions" style="color: #f97316;">Discussions</a>
+            </p>
+        </footer>
+    </div>
+</body>
+</html>
