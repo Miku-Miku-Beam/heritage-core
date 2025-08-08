@@ -43,7 +43,7 @@ export default async function ProgramPage({ params }: ProgramPageProps) {
   };
 
   return (
-    <main className="min-h-screen">
+    <main>
       <ProgramDetail program={safeProgram} />
     </main>
   );

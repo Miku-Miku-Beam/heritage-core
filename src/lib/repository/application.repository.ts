@@ -57,6 +57,15 @@ interface ProgramWithDetails {
     categoryId: string;
     artisan: ArtisanUser;
     category: Category;
+    programImageUrl?: string | null;
+}
+
+interface ProgressReport {
+    id: string;
+    reportText: string;
+    imageUrl?: string | null;
+    weekNumber: number;
+    createdAt: Date;
 }
 
 interface ApplicationWithDetails {
@@ -70,6 +79,7 @@ interface ApplicationWithDetails {
     applicantId: string;
     Program: ProgramWithDetails;
     applicant: ApplicantUser;
+    progressReports: ProgressReport[];
 }
 
 interface ApplicationStats {
@@ -220,6 +230,18 @@ const applicationRepository: IApplicationRepository = {
                                 background: true
                             }
                         }
+                    }
+                },
+                progressReports: {
+                    select: {
+                        id: true,
+                        reportText: true,
+                        imageUrl: true,
+                        weekNumber: true,
+                        createdAt: true
+                    },
+                    orderBy: {
+                        weekNumber: 'asc'
                     }
                 }
             }
@@ -468,6 +490,18 @@ const applicationRepository: IApplicationRepository = {
                                 background: true
                             }
                         }
+                    }
+                },
+                progressReports: {
+                    select: {
+                        id: true,
+                        reportText: true,
+                        imageUrl: true,
+                        weekNumber: true,
+                        createdAt: true
+                    },
+                    orderBy: {
+                        weekNumber: 'asc'
                     }
                 }
             },
@@ -758,7 +792,7 @@ export { applicationRepository };
         ApplicantUser, ApplicationStats, ApplicationWithDetails, ArtisanApplicationStats, ArtisanUser,
         Category, IApplicationRepository,
         ICreateApplicationData,
-        IUpdateApplicationData, ProgramApplicationStats, ProgramWithDetails
+        IUpdateApplicationData, ProgramApplicationStats, ProgramWithDetails, ProgressReport
     };
 
 // Application utility functions
