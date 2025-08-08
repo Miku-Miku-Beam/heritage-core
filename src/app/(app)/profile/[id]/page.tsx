@@ -2,13 +2,13 @@ import { repositories } from "@/lib/repository";
 import { notFound } from "next/navigation";
 
 interface ApplicantProfilePageProps {
-    params: {
-        id: string;
-    };
+    params: Promise<{ id: string }>;
 }
 
 export default async function ApplicantProfilePage({ params }: ApplicantProfilePageProps) {
-    const user = await repositories.user.getUserById(params.id);
+    const { id } = await params;
+
+    const user = await repositories.user.getUserById(id);
 
     if (!user || user.role !== 'APPLICANT') {
         notFound();
@@ -104,7 +104,7 @@ export default async function ApplicantProfilePage({ params }: ApplicantProfileP
                                     </div>
                                     Background & Interests
                                 </h2>
-                                
+
                                 {user.ApplicantProfile.background && (
                                     <div className="mb-6 p-4 bg-gradient-to-r from-orange-50 to-yellow-50 rounded-lg border border-orange-100">
                                         <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center gap-2">
@@ -186,15 +186,14 @@ export default async function ApplicantProfilePage({ params }: ApplicantProfileP
                                                     </p>
                                                 </div>
                                                 <div className="ml-4">
-                                                    <span className={`px-3 py-1 rounded-full text-sm font-medium ${
-                                                        application.status === 'PENDING'
-                                                            ? 'bg-yellow-100 text-yellow-800 border border-yellow-200'
-                                                            : application.status === 'ACCEPTED'
+                                                    <span className={`px-3 py-1 rounded-full text-sm font-medium ${application.status === 'PENDING'
+                                                        ? 'bg-yellow-100 text-yellow-800 border border-yellow-200'
+                                                        : application.status === 'ACCEPTED'
                                                             ? 'bg-green-100 text-green-800 border border-green-200'
                                                             : application.status === 'APPROVED'
-                                                            ? 'bg-green-100 text-green-800 border border-green-200'
-                                                            : 'bg-red-100 text-red-800 border border-red-200'
-                                                    }`}>
+                                                                ? 'bg-green-100 text-green-800 border border-green-200'
+                                                                : 'bg-red-100 text-red-800 border border-red-200'
+                                                        }`}>
                                                         {application.status}
                                                     </span>
                                                 </div>
@@ -229,13 +228,13 @@ export default async function ApplicantProfilePage({ params }: ApplicantProfileP
                                 <div className="flex items-center justify-between p-3 bg-gradient-to-r from-orange-50 to-yellow-50 rounded-lg border border-orange-100">
                                     <span className="text-gray-700 font-medium">Member since</span>
                                     <span className="font-bold text-orange-600">
-                                        {new Date(user.createdAt).toLocaleDateString('en-US', { 
-                                            month: 'short', 
-                                            year: 'numeric' 
+                                        {new Date(user.createdAt).toLocaleDateString('en-US', {
+                                            month: 'short',
+                                            year: 'numeric'
                                         })}
                                     </span>
                                 </div>
-                                
+
                                 <div className="flex items-center justify-between p-3 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border border-blue-100">
                                     <span className="text-gray-700 font-medium">Applications Sent</span>
                                     <span className="font-bold text-blue-600">

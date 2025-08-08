@@ -1,6 +1,6 @@
 "use server";
 import Form from 'next/form';
-import { updateProfile } from "./page";
+import updateProfile from "./page";
 
 interface ApplicantProfile {
   background?: string;
@@ -30,8 +30,8 @@ export default async function ProfileForm({ user }: ProfileFormProps) {
 
       {/* Profile Form */}
       <Form
-        action={async (formData: FormData) => {
-          await updateProfile(formData);
+        action={async () => {
+          await updateProfile();
         }}
         className="space-y-4"
       >
