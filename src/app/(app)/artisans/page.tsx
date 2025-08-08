@@ -78,7 +78,7 @@ export default async function ArtisansPage() {
                                                 {profile?.imageUrl || artisan.profileImageUrl ? (
                                                     <div className="relative">
                                                         <div className="w-20 h-20 rounded-full ring-4 ring-white shadow-lg overflow-hidden">
-                                                            <Image
+                                                            <img
                                                                 src={profile?.imageUrl || artisan.profileImageUrl || '/placeholder-avatar.png'}
                                                                 alt={artisan.name || 'Artisan'}
                                                                 width={80}

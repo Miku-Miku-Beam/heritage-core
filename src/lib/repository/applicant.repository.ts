@@ -50,7 +50,7 @@ const applicantRepository: IApplicantRepository = {
     // Applicant profile management
     async getApplicantById(userId: string) {
         return await prisma.user.findUnique({
-            where: { 
+            where: {
                 id: userId,
                 role: 'APPLICANT'
             },
@@ -162,13 +162,34 @@ const applicantRepository: IApplicantRepository = {
     },
 
     async updateApplicantProfile(userId: string, data: IUpdateApplicantProfileData) {
+        console.log('Updating applicant profile with data:', data);
+
+        // Check if the profile exists
+        const existingProfile = await prisma.applicantProfile.findUnique({
+            where: { userId },
+        });
+
+        if (!existingProfile) {
+            console.log('Profile not found, creating a new profile...');
+            await prisma.applicantProfile.create({
+                data: {
+                    userId: userId,
+                    background: data.background || '',
+                    interests: data.interests || '',
+                    portfolioUrl: data.portfolioUrl || '',
+                    createdAt: new Date(),
+                },
+            });
+        }
+
+        // Update the profile
         return await prisma.applicantProfile.update({
             where: { userId },
             data: {
                 ...(data.background && { background: data.background }),
                 ...(data.interests && { interests: data.interests }),
                 ...(data.portfolioUrl !== undefined && { portfolioUrl: data.portfolioUrl }),
-                ...(data.cvFileUrl !== undefined && { cvFileUrl: data.cvFileUrl })
+                ...(data.cvFileUrl !== undefined && { cvFileUrl: data.cvFileUrl }),
             },
             include: {
                 user: {
@@ -176,10 +197,10 @@ const applicantRepository: IApplicantRepository = {
                         id: true,
                         name: true,
                         email: true,
-                        profileImageUrl: true
-                    }
-                }
-            }
+                        profileImageUrl: true,
+                    },
+                },
+            },
         });
     },
 
@@ -456,7 +477,7 @@ const applicantRepository: IApplicantRepository = {
 
         // Get programs the user hasn't applied to
         const appliedProgramIds = applicant.Application.map(app => app.ProgramId);
-        
+
         return await prisma.program.findMany({
             where: {
                 isOpen: true,
@@ -501,7 +522,7 @@ const applicantRepository: IApplicantRepository = {
     // Applicant statistics
     async getApplicantDashboard(applicantId: string) {
         const applications = await this.getMyApplications(applicantId);
-        
+
         const totalApplications = applications.length;
         const pendingApplications = applications.filter((app: any) => app.status === 'PENDING').length;
         const approvedApplications = applications.filter((app: any) => app.status === 'APPROVED').length;
@@ -510,12 +531,12 @@ const applicantRepository: IApplicantRepository = {
 
         // Get categories applied to
         const categoriesApplied = new Set(applications.map((app: any) => app.Program.category.name));
-        
+
         // Get recent activity (last 30 days)
         const thirtyDaysAgo = new Date();
         thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-        
-        const recentApplications = applications.filter((app: any) => 
+
+        const recentApplications = applications.filter((app: any) =>
             new Date(app.createdAt) >= thirtyDaysAgo
         ).length;
 
@@ -529,7 +550,7 @@ const applicantRepository: IApplicantRepository = {
             completionRate: totalApplications > 0 ? Math.round((completedApplications / totalApplications) * 100) : 0,
             categoriesApplied: Array.from(categoriesApplied),
             recentActivity: recentApplications,
-            upcomingPrograms: applications.filter((app: any) => 
+            upcomingPrograms: applications.filter((app: any) =>
                 app.status === 'APPROVED' && new Date(app.Program.startDate) > new Date()
             ).length
         };
@@ -547,7 +568,7 @@ export const applicantUtils = {
     // Get applicant dashboard statistics
     async getApplicantStats(applicantId: string) {
         const applications = await applicantRepository.getMyApplications(applicantId);
-        
+
         const totalApplications = applications.length;
         const pendingApplications = applications.filter((app: any) => app.status === 'PENDING').length;
         const approvedApplications = applications.filter((app: any) => app.status === 'APPROVED').length;
@@ -640,7 +661,7 @@ export const applicantUtils = {
     // Get application insights
     async getApplicationInsights(applicantId: string) {
         const applications = await applicantRepository.getMyApplications(applicantId);
-        
+
         if (applications.length === 0) {
             return {
                 totalApplications: 0,
@@ -649,17 +670,17 @@ export const applicantUtils = {
         }
 
         const insights: string[] = [];
-        
+
         // Category analysis
         const categories = applications.map((app: any) => app.Program.category.name);
         const categoryCount = categories.reduce((acc: any, cat: string) => {
             acc[cat] = (acc[cat] || 0) + 1;
             return acc;
         }, {});
-        
+
         const mostAppliedCategory = Object.entries(categoryCount)
-            .sort(([,a]: any, [,b]: any) => b - a)[0];
-        
+            .sort(([, a]: any, [, b]: any) => b - a)[0];
+
         if (mostAppliedCategory) {
             insights.push(`You've applied to ${mostAppliedCategory[1]} programs in ${mostAppliedCategory[0]}`);
         }
@@ -667,7 +688,7 @@ export const applicantUtils = {
         // Success rate analysis
         const approvedApps = applications.filter((app: any) => app.status === 'APPROVED').length;
         const successRate = Math.round((approvedApps / applications.length) * 100);
-        
+
         if (successRate > 70) {
             insights.push('Great job! You have a high application success rate');
         } else if (successRate < 30) {
@@ -696,7 +717,7 @@ export const applicantUtils = {
     async getRecommendedNextSteps(applicantId: string) {
         const completion = await this.getProfileCompletion(applicantId);
         const dashboard = await applicantRepository.getApplicantDashboard(applicantId);
-        
+
         const recommendations: string[] = [];
 
         // Profile completion recommendations
