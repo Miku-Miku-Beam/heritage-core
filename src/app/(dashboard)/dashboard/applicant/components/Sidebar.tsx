@@ -2,6 +2,7 @@ import { getCurrentUser } from '@/lib/auth';
 import LogoutButton from '@/lib/components/LogoutButton';
 import Link from 'next/link';
 import ActiveLink from './ActiveLink';
+import { DEFAULT_PFP } from '@/lib/static';
 
 const menu = [
   { 
@@ -69,7 +70,7 @@ const Sidebar = async () => {
 
       {/* Navigation */}
       <nav className="flex-1 p-4 space-y-2">
-        {menu.map((item, index) => (
+        {menu.map((item) => (
           <div key={item.href}>
             <ActiveLink
               href={item.href}
@@ -101,8 +102,8 @@ const Sidebar = async () => {
         <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-4 mb-4 border border-orange-200/50 shadow-lg">
           <div className="flex items-center gap-3">
             <div className="relative">
-              <img
-                src={user.profileImageUrl ?? "/default-avatar.png"}
+            <img
+                src={user.profileImageUrl && user.profileImageUrl !== '' && user.profileImageUrl !== null ? user.profileImageUrl : DEFAULT_PFP}
                 alt="Avatar"
                 className="w-12 h-12 rounded-xl border-2 border-white object-cover shadow-md"
               />
