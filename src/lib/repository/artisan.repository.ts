@@ -239,23 +239,23 @@ interface IArtisanRepository {
     createArtisanProfile(data: ICreateArtisanProfileData): Promise<ArtisanProfileDetails>;
     updateArtisanProfile(userId: string, data: IUpdateArtisanProfileData): Promise<ArtisanProfileDetails>;
     deleteArtisanProfile(userId: string): Promise<void>;
-    
+
     // Artisan's programs
     getMyPrograms(artisanId: string): Promise<ProgramWithDetails[]>;
     createProgram(artisanId: string, data: IArtisanProgramData): Promise<ProgramWithDetails>;
     updateMyProgram(artisanId: string, programId: string, data: IUpdateProgramData): Promise<ProgramWithDetails>;
     deleteMyProgram(artisanId: string, programId: string): Promise<void>;
     toggleProgramStatus(artisanId: string, programId: string): Promise<ProgramWithApplications>;
-    
+
     // Artisan's applications management
     getMyApplications(artisanId: string): Promise<ApplicationWithApplicant[]>;
     reviewApplication(artisanId: string, applicationId: string, status: 'APPROVED' | 'REJECTED'): Promise<ApplicationWithProgram>;
     getApplicationsForProgram(artisanId: string, programId: string): Promise<ApplicationWithApplicant[]>;
-    
+
     // Artisan dashboard and analytics
     getArtisanDashboard(artisanId: string): Promise<ArtisanDashboard>;
     getArtisanPerformance(artisanId: string): Promise<ArtisanPerformance>;
-    
+
     // Helper methods
     calculateAvgResponseTime(applications: any[]): number;
     calculatePerformanceScore(dashboard: ArtisanDashboard): number;
@@ -266,7 +266,7 @@ const artisanRepository: IArtisanRepository = {
     // Artisan profile management
     async getArtisanById(userId: string) {
         const result = await prisma.user.findUnique({
-            where: { 
+            where: {
                 id: userId,
                 role: 'ARTISAN'
             },
@@ -359,7 +359,29 @@ const artisanRepository: IArtisanRepository = {
     },
 
     async updateArtisanProfile(userId: string, data: IUpdateArtisanProfileData) {
-        const result = await prisma.artisanProfile.update({
+        console.log('Updating artisan profile with data:', data);
+
+        // Check if the profile exists
+        const existingProfile = await prisma.artisanProfile.findUnique({
+            where: { userId },
+        });
+
+        if (!existingProfile) {
+            console.log('Artisan profile not found, creating a new profile...');
+            await prisma.artisanProfile.create({
+                data: {
+                    userId,
+                    story: data.story || '',
+                    expertise: data.expertise || '',
+                    location: data.location || '',
+                    imageUrl: data.imageUrl || '',
+                    works: data.works || [],
+                },
+            });
+        }
+
+        // Update the profile
+        return await prisma.artisanProfile.update({
             where: { userId },
             data: {
                 ...(data.story && { story: data.story }),
@@ -377,12 +399,11 @@ const artisanRepository: IArtisanRepository = {
                         profileImageUrl: true,
                         location: true,
                         bio: true,
-                        createdAt: true
-                    }
-                }
-            }
+                        createdAt: true,
+                    },
+                },
+            },
         });
-        return result as ArtisanProfileDetails;
     },
 
     async deleteArtisanProfile(userId: string) {
@@ -439,7 +460,7 @@ const artisanRepository: IArtisanRepository = {
     async createProgram(artisanId: string, data: IArtisanProgramData) {
         // Verify the user is an artisan
         const artisan = await prisma.user.findUnique({
-            where: { 
+            where: {
                 id: artisanId,
                 role: 'ARTISAN'
             }
@@ -719,7 +740,7 @@ const artisanRepository: IArtisanRepository = {
         const totalPrograms = programs.length;
         const activePrograms = programs.filter(p => p.isOpen).length;
         const upcomingPrograms = programs.filter(p => new Date(p.startDate) > new Date()).length;
-        const ongoingPrograms = programs.filter(p => 
+        const ongoingPrograms = programs.filter(p =>
             new Date(p.startDate) <= new Date() && new Date(p.endDate) >= new Date()
         ).length;
         const completedPrograms = programs.filter(p => new Date(p.endDate) < new Date()).length;
@@ -732,8 +753,8 @@ const artisanRepository: IArtisanRepository = {
         // Recent activity (last 30 days)
         const thirtyDaysAgo = new Date();
         thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-        
-        const recentApplications = applications.filter((app: any) => 
+
+        const recentApplications = applications.filter((app: any) =>
             new Date(app.createdAt) >= thirtyDaysAgo
         ).length;
 
@@ -765,7 +786,7 @@ const artisanRepository: IArtisanRepository = {
     async getArtisanPerformance(artisanId: string) {
         const dashboard = await this.getArtisanDashboard(artisanId);
         const programs = await this.getMyPrograms(artisanId);
-        
+
         // Calculate performance metrics
         const programsWithMetrics = programs.map(program => {
             const totalApps = program.applications.length;
@@ -796,7 +817,7 @@ const artisanRepository: IArtisanRepository = {
 
     // Helper methods
     calculateAvgResponseTime(applications: any[]): number {
-        const processedApps = applications.filter(app => 
+        const processedApps = applications.filter(app =>
             app.status === 'APPROVED' || app.status === 'REJECTED'
         );
 
@@ -880,7 +901,7 @@ export const artisanUtils = {
     // Get programs with extended statistics
     async getProgramsWithStats(artisanId: string) {
         const programs = await artisanRepository.getMyPrograms(artisanId);
-        
+
         return programs.map((program: any) => ({
             ...program,
             totalApplications: program.applications.length,
@@ -896,7 +917,7 @@ export const artisanUtils = {
     // Get recent applications for artisan with additional context
     async getRecentApplications(artisanId: string, limit: number = 5) {
         const applications = await artisanRepository.getMyApplications(artisanId);
-        
+
         return applications.slice(0, limit).map((app: any) => ({
             ...app,
             isNew: new Date(app.createdAt).getTime() > Date.now() - (7 * 24 * 60 * 60 * 1000), // Last 7 days
@@ -908,21 +929,21 @@ export const artisanUtils = {
     async getPerformanceMetrics(artisanId: string) {
         const dashboard = await artisanRepository.getArtisanDashboard(artisanId);
         const programs = await artisanRepository.getMyPrograms(artisanId);
-        
+
         // Calculate average applications per program
-        const avgApplicationsPerProgram = dashboard.totalPrograms > 0 
-            ? Math.round(dashboard.totalApplications / dashboard.totalPrograms) 
+        const avgApplicationsPerProgram = dashboard.totalPrograms > 0
+            ? Math.round(dashboard.totalApplications / dashboard.totalPrograms)
             : 0;
 
         // Find most popular program
-        const mostPopularProgram = programs.reduce((max: any, program: any) => 
-            (program.applications?.length || 0) > (max?.applications?.length || 0) ? program : max, 
+        const mostPopularProgram = programs.reduce((max: any, program: any) =>
+            (program.applications?.length || 0) > (max?.applications?.length || 0) ? program : max,
             programs[0] || null
         );
 
         // Calculate program popularity score
-        const popularityScore = programs.length > 0 
-            ? Math.round((dashboard.totalApplications / programs.length) * 10) 
+        const popularityScore = programs.length > 0
+            ? Math.round((dashboard.totalApplications / programs.length) * 10)
             : 0;
 
         return {
@@ -975,11 +996,11 @@ export const artisanUtils = {
 function getTimeAgo(date: Date): string {
     const now = new Date();
     const diff = now.getTime() - new Date(date).getTime();
-    
+
     const minutes = Math.floor(diff / (1000 * 60));
     const hours = Math.floor(diff / (1000 * 60 * 60));
     const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-    
+
     if (minutes < 60) {
         return `${minutes} menit yang lalu`;
     } else if (hours < 24) {
