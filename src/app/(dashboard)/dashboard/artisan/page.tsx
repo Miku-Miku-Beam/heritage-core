@@ -1,6 +1,7 @@
 import { getCurrentCookie } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 import Link from 'next/link';
+import Image from 'next/image';
 import { default as ApplicantList, default as NotificationList } from './components/ApplicantList';
 
 // This page needs dynamic rendering due to cookie usage
@@ -131,7 +132,7 @@ export default async function ArtisanDashboardPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 via-yellow-50 to-orange-100">
-      <main className="flex-1 p-6 max-w-7xl mx-auto">
+      <main className="flex-1 p-4 sm:p-6 max-w-7xl mx-auto">
         {/* Welcome Header */}
         <div className="mb-8">
           <div className="bg-gradient-to-r from-orange-500 to-yellow-500 rounded-3xl p-8 text-white relative overflow-hidden">
@@ -169,7 +170,7 @@ export default async function ArtisanDashboardPage() {
         </div>
 
         {/* Statistics Grid */}
-        <div className="grid grid-cols-2 lg:grid-cols-6 gap-6 mb-8">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 sm:gap-6 mb-8">
           <div className="bg-white rounded-2xl shadow-xl border border-orange-200 p-6 text-center group hover:scale-105 transition-all duration-300">
             <div className="w-12 h-12 bg-gradient-to-r from-orange-500 to-yellow-500 rounded-xl flex items-center justify-center mx-auto mb-4">
               <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -231,7 +232,7 @@ export default async function ArtisanDashboardPage() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
           {/* Recent Applications */}
           <div className="lg:col-span-2">
             <div className="bg-white rounded-2xl shadow-xl border border-orange-200 p-6">
@@ -278,11 +279,13 @@ export default async function ArtisanDashboardPage() {
                 <div className="space-y-4">
                   {allApplications.map(app => (
                     <div key={app.id} className="border border-gray-200 rounded-xl p-4 hover:shadow-md transition-all duration-200 group">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-4">
-                          <img
+                      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                        <div className="flex items-center gap-4 min-w-0">
+                          <Image
                             src={app.applicant?.profileImageUrl ?? "/default-avatar.png"}
-                            alt={app.applicant?.name ?? undefined}
+                            alt={app.applicant?.name ?? 'Applicant'}
+                            width={56}
+                            height={56}
                             className="w-14 h-14 rounded-xl border-2 border-orange-200 object-cover"
                           />
                           <div>
@@ -297,7 +300,7 @@ export default async function ArtisanDashboardPage() {
                             </div>
                           </div>
                         </div>
-                        <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-3 sm:self-end sm:ml-auto">
                           {statusBadge(app.status)}
                           <Link
                             href={`/dashboard/artisan/applicants`}

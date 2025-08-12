@@ -3,6 +3,8 @@ import LogoutButton from '@/lib/components/LogoutButton';
 import Link from 'next/link';
 import ActiveLink from './ActiveLink';
 import { DEFAULT_PFP } from '@/lib/static';
+import Image from 'next/image';
+import SidebarMobile from './SidebarMobile';
 
 const menu = [
   { 
@@ -48,7 +50,14 @@ const Sidebar = async () => {
   if (!user) return null;
 
   return (
-    <aside className="w-full md:w-72 min-h-screen bg-gradient-to-b from-white via-orange-50/30 to-yellow-50/30 backdrop-blur-md border-r border-orange-200/50 flex flex-col fixed md:static z-40 shadow-2xl">
+    <>
+      {/* Mobile top bar + drawer */}
+      <div className="md:hidden w-full">
+        <SidebarMobile user={{ name: user.name, email: user.email, profileImageUrl: user.profileImageUrl }} />
+      </div>
+
+      {/* Desktop sidebar */}
+      <aside className="hidden md:flex md:w-72 min-h-screen bg-gradient-to-b from-white via-orange-50/30 to-yellow-50/30 backdrop-blur-md border-r border-orange-200/50 flex-col sticky top-0 z-40 shadow-2xl">
       {/* Header */}
       <div className="p-6 border-b border-orange-200/50">
         <Link href="/" className="block w-fit group">
@@ -97,14 +106,16 @@ const Sidebar = async () => {
       </nav>
 
       {/* User Section */}
-      <div className="p-6 border-t border-orange-200/50 bg-gradient-to-r from-orange-50/50 to-yellow-50/50">
+      <div className="p-4 md:p-6 border-t border-orange-200/50 bg-gradient-to-r from-orange-50/50 to-yellow-50/50">
         {/* User Profile Card */}
         <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-4 mb-4 border border-orange-200/50 shadow-lg">
           <div className="flex items-center gap-3">
             <div className="relative">
-            <img
+              <Image
                 src={user.profileImageUrl && user.profileImageUrl !== '' && user.profileImageUrl !== null ? user.profileImageUrl : DEFAULT_PFP}
                 alt="Avatar"
+                width={48}
+                height={48}
                 className="w-12 h-12 rounded-xl border-2 border-white object-cover shadow-md"
               />
               <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 border-2 border-white rounded-full" />
@@ -122,7 +133,8 @@ const Sidebar = async () => {
           <LogoutButton />
         </div>
       </div>
-    </aside>
+      </aside>
+    </>
   );
 };
 

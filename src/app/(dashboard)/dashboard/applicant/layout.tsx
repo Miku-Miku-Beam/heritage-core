@@ -7,9 +7,9 @@ function ArtisanDashboardLayout({
 }>) {
     return (
         <>
-            <div className="flex h-screen  overflow-hidden ">
+            <div className="flex flex-col md:flex-row min-h-screen md:h-screen overflow-hidden">
                 <Sidebar />
-                <div className="h-screen overflow-scroll w-full">
+                <div className="flex-1 w-full min-h-screen md:h-screen md:overflow-y-auto">
                     {children}
                 </div>
             </div>
