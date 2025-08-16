@@ -2,6 +2,7 @@
 import { getCurrentUser } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import Link from "next/link";
+import Image from "next/image";
 import { redirect } from "next/navigation";
 
 function statusBadge(status: string) {
@@ -102,7 +103,7 @@ export default async function ApplicantDashboardPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 via-yellow-50 to-orange-100">
-      <main className="flex-1 p-6 max-w-7xl mx-auto">
+      <main className="flex-1 p-4 sm:p-6 max-w-7xl mx-auto">
         {/* Welcome Header */}
         <div className="mb-8">
           <div className="bg-gradient-to-r from-orange-500 to-yellow-500 rounded-3xl p-8 text-white relative overflow-hidden">
@@ -142,7 +143,7 @@ export default async function ApplicantDashboardPage() {
         </div>
 
         {/* Statistics Grid */}
-        <div className="grid grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 sm:gap-6 mb-8">
           <div className="bg-white rounded-2xl shadow-xl border border-orange-200 p-6 text-center group hover:scale-105 transition-transform duration-300">
             <div className="w-12 h-12 bg-gradient-to-r from-orange-500 to-yellow-500 rounded-xl flex items-center justify-center mx-auto mb-4">
               <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -194,7 +195,7 @@ export default async function ApplicantDashboardPage() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
           {/* Recent Applications */}
           <div className="lg:col-span-2">
             <div className="bg-white rounded-2xl shadow-xl border border-orange-200 p-6 hover:shadow-2xl transition-shadow duration-300">
@@ -244,18 +245,20 @@ export default async function ApplicantDashboardPage() {
                       key={app.id} 
                       className="border border-gray-200 rounded-xl p-4 hover:shadow-md transition-all duration-200 group hover:scale-[1.02]"
                     >
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-4">
-                          <img
-                            src={app.Program?.programImageUrl ?? "/default-program.jpg"}
-                            alt={app.Program?.title}
+                      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                        <div className="flex items-center gap-4 min-w-0">
+                          <Image
+                            src={app.Program?.programImageUrl ?? "/default-program.png"}
+                            alt={app.Program?.title || 'Program'}
+                            width={56}
+                            height={56}
                             className="w-14 h-14 rounded-xl border-2 border-orange-200 object-cover hover:scale-110 transition-transform duration-200"
                           />
                           <div>
                             <h3 className="font-bold text-gray-900 group-hover:text-orange-600 transition-colors">
                               {app.Program?.title}
                             </h3>
-                            <div className="flex items-center gap-2 text-sm text-gray-500">
+                            <div className="flex flex-wrap items-center gap-2 text-sm text-gray-500">
                               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                               </svg>
@@ -265,7 +268,7 @@ export default async function ApplicantDashboardPage() {
                             </div>
                           </div>
                         </div>
-                        <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-3 sm:self-end sm:ml-auto">
                           {statusBadge(app.status)}
                           <Link
                             href={`/dashboard/applicant/applications/${app.id}`}
@@ -337,10 +340,12 @@ export default async function ApplicantDashboardPage() {
                       href={`/programs/${program.id}`}
                       className="block p-3 border border-gray-200 rounded-xl hover:shadow-md transition-all duration-200 group hover:scale-[1.02]"
                     >
-                      <div className="flex items-center gap-3">
-                        <img
-                          src={program.programImageUrl ?? "/default-program.jpg"}
+                      <div className="flex items-center gap-3 min-w-0">
+                        <Image
+                          src={program.programImageUrl ?? "/default-program.png"}
                           alt={program.title}
+                          width={48}
+                          height={48}
                           className="w-12 h-12 rounded-lg object-cover border border-orange-200 hover:scale-110 transition-transform duration-200"
                         />
                         <div className="flex-1 min-w-0">
