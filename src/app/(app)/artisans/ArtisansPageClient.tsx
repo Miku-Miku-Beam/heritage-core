@@ -39,6 +39,8 @@ export default function ArtisansPageClient({ initialArtisans }: ArtisansPageClie
     const [selectedFilter, setSelectedFilter] = useState("All");
     const [sortBy, setSortBy] = useState("Latest");
     const [isLoading, setIsLoading] = useState(false);
+    const [isProvinceDropdownOpen, setIsProvinceDropdownOpen] = useState(false);
+    const [isSortDropdownOpen, setIsSortDropdownOpen] = useState(false);
     
     // Refs
     const searchTimeout = useRef<NodeJS.Timeout | null>(null);
@@ -206,15 +208,32 @@ export default function ArtisansPageClient({ initialArtisans }: ArtisansPageClie
                 }
             }
             
-            // Escape to clear filters
-            if (e.key === 'Escape' && (searchTerm || selectedFilter !== "All")) {
-                clearFilters();
+            // Escape to clear filters or close dropdowns
+            if (e.key === 'Escape') {
+                if (isProvinceDropdownOpen || isSortDropdownOpen) {
+                    setIsProvinceDropdownOpen(false);
+                    setIsSortDropdownOpen(false);
+                } else if (searchTerm || selectedFilter !== "All") {
+                    clearFilters();
+                }
+            }
+        };
+        
+        const handleClickOutside = (e: MouseEvent) => {
+            const target = e.target as HTMLElement;
+            if (!target.closest('.dropdown-container')) {
+                setIsProvinceDropdownOpen(false);
+                setIsSortDropdownOpen(false);
             }
         };
         
         document.addEventListener('keydown', handleKeyDown);
-        return () => document.removeEventListener('keydown', handleKeyDown);
-    }, [searchTerm, selectedFilter]);
+        document.addEventListener('click', handleClickOutside);
+        return () => {
+            document.removeEventListener('keydown', handleKeyDown);
+            document.removeEventListener('click', handleClickOutside);
+        };
+    }, [searchTerm, selectedFilter, isProvinceDropdownOpen, isSortDropdownOpen]);
 
     // Loading state simulation
     useEffect(() => {
@@ -304,41 +323,120 @@ export default function ArtisansPageClient({ initialArtisans }: ArtisansPageClie
                             )}
                         </div>
 
-                        {/* Province */}
-                        <div className="relative min-w-[180px]">
-                            <select
-                                value={selectedFilter}
-                                onChange={(e) => handleFilterChange(e.target.value)}
-                                className="appearance-none w-full px-3 py-2.5 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 text-sm pr-8"
+                        {/* Province Dropdown */}
+                        <div className="relative min-w-[180px] dropdown-container">
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    setIsProvinceDropdownOpen(!isProvinceDropdownOpen);
+                                    setIsSortDropdownOpen(false);
+                                }}
+                                className="w-full px-3 py-2.5 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 text-sm text-left flex items-center justify-between hover:border-gray-400 transition-colors"
                             >
-                                <option value="All">All Provinces</option>
-                                {indonesianProvinces.filter(p => p !== 'All').map((province) => (
-                                    <option key={province} value={province}>
-                                        {province}
-                                    </option>
-                                ))}
-                            </select>
-                            <svg className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                            </svg>
+                                <span className="truncate">
+                                    {selectedFilter === "All" ? "All Provinces" : selectedFilter}
+                                </span>
+                                <svg 
+                                    className={`w-4 h-4 text-gray-400 transition-transform duration-200 ${isProvinceDropdownOpen ? 'rotate-180' : ''}`} 
+                                    fill="none" 
+                                    stroke="currentColor" 
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                                </svg>
+                            </button>
+                            
+                            {isProvinceDropdownOpen && (
+                                <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-50 max-h-60 overflow-y-auto">
+                                    <div className="py-1">
+                                        <button
+                                            type="button"
+                                            onClick={() => {
+                                                handleFilterChange("All");
+                                                setIsProvinceDropdownOpen(false);
+                                            }}
+                                            className={`w-full px-3 py-2 text-left text-sm hover:bg-orange-50 transition-colors ${
+                                                selectedFilter === "All" ? 'bg-orange-100 text-orange-700 font-medium' : 'text-gray-700'
+                                            }`}
+                                        >
+                                            All Provinces
+                                        </button>
+                                        {indonesianProvinces.filter(p => p !== 'All').map((province) => (
+                                            <button
+                                                key={province}
+                                                type="button"
+                                                onClick={() => {
+                                                    handleFilterChange(province);
+                                                    setIsProvinceDropdownOpen(false);
+                                                }}
+                                                className={`w-full px-3 py-2 text-left text-sm hover:bg-orange-50 transition-colors ${
+                                                    selectedFilter === province ? 'bg-orange-100 text-orange-700 font-medium' : 'text-gray-700'
+                                                }`}
+                                            >
+                                                {province}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
                         </div>
 
-                        {/* Sort */}
-                        <div className="relative min-w-[160px]">
-                            <select
-                                value={sortBy}
-                                onChange={handleSortChange}
-                                className="appearance-none w-full px-3 py-2.5 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 text-sm pr-8"
+                        {/* Sort Dropdown */}
+                        <div className="relative min-w-[160px] dropdown-container">
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    setIsSortDropdownOpen(!isSortDropdownOpen);
+                                    setIsProvinceDropdownOpen(false);
+                                }}
+                                className="w-full px-3 py-2.5 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 text-sm text-left flex items-center justify-between hover:border-gray-400 transition-colors"
                             >
-                                <option value="Latest">Latest</option>
-                                <option value="Name A-Z">Name A-Z</option>
-                                <option value="Name Z-A">Name Z-A</option>
-                                <option value="Most Programs">Most Programs</option>
-                                <option value="Location">Location</option>
-                            </select>
-                            <svg className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                            </svg>
+                                <span className="truncate flex items-center">
+                                    <svg className="w-4 h-4 mr-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12" />
+                                    </svg>
+                                    {sortBy}
+                                </span>
+                                <svg 
+                                    className={`w-4 h-4 text-gray-400 transition-transform duration-200 ${isSortDropdownOpen ? 'rotate-180' : ''}`} 
+                                    fill="none" 
+                                    stroke="currentColor" 
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                                </svg>
+                            </button>
+                            
+                            {isSortDropdownOpen && (
+                                <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
+                                    <div className="py-1">
+                                        {[
+                                            { value: "Latest", icon: "M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z", label: "Latest" },
+                                            { value: "Name A-Z", icon: "M3 4h13M3 8h9m-9 4h9m5-4v12m0 0l-4-4m4 4l4-4", label: "Name A-Z" },
+                                            { value: "Name Z-A", icon: "M3 4h13M3 8h9m-9 4h9m5-4v12m0 0l4 4m-4-4l-4 4", label: "Name Z-A" },
+                                            { value: "Most Programs", icon: "M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z", label: "Most Programs" },
+                                            { value: "Location", icon: "M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z M15 11a3 3 0 11-6 0 3 3 0 016 0z", label: "Location" }
+                                        ].map((option) => (
+                                            <button
+                                                key={option.value}
+                                                type="button"
+                                                onClick={() => {
+                                                    setSortBy(option.value);
+                                                    setIsSortDropdownOpen(false);
+                                                }}
+                                                className={`w-full px-3 py-2 text-left text-sm hover:bg-orange-50 transition-colors flex items-center ${
+                                                    sortBy === option.value ? 'bg-orange-100 text-orange-700 font-medium' : 'text-gray-700'
+                                                }`}
+                                            >
+                                                <svg className="w-4 h-4 mr-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={option.icon} />
+                                                </svg>
+                                                {option.label}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
                         </div>
 
                         {/* Reset */}
